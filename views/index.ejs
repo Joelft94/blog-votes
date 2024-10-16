@@ -1,0 +1,12 @@
+<h2>Latest Posts</h2>
+<% if (locals.user) { %>
+  <a href="/create" class="create-post-btn">Create New Post</a>
+<% } %>
+<ul class="post-list">
+  <% posts.forEach(post => { %>
+    <li>
+      <h3><a href="/post/<%= post.id %>"><%= post.title %></a></h3>
+      <p>Votes: <%= post.votes %></p>
+    </li>
+  <% }) %>
+</ul>

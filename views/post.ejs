@@ -1,0 +1,34 @@
+<article>
+  <h2><%= post.title %></h2>
+  <p><%= post.content %></p>
+  <p>Votes: <span id="voteCount"><%= post.votes %></span></p>
+  <% if (locals.user) { %>
+    <form action="/post/<%= post.id %>/vote" method="POST">
+      <button type="submit" id="voteButton">Vote</button>
+    </form>
+    <% if (user.id === post.user_id) { %>
+      <a href="/post/<%= post.id %>/update" class="btn">Edit</a>
+      <form action="/post/<%= post.id %>/delete" method="POST" style="display: inline;">
+        <button type="submit" class="btn delete-btn" onclick="return confirm('Are you sure you want to delete this post?');">Delete</button>
+      </form>
+    <% } %>
+  <% } else { %>
+    <p>Login to vote or edit</p>
+  <% } %>
+</article>
+
+<script>
+document.getElementById('voteButton')?.addEventListener('click', function(e) {
+  e.preventDefault();
+  fetch('/post/<%= post.id %>/vote', { method: 'POST' })
+    .then(response => response.json())
+    .then(data => {
+      if (data.error) {
+        console.error('Error:', data.error);
+      } else {
+        document.getElementById('voteCount').textContent = data.votes;
+      }
+    })
+    .catch(error => console.error('Error:', error));
+});
+</script>
