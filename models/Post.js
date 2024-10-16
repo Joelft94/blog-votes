@@ -55,30 +55,8 @@ class Post {
   static async vote(id) {
     console.log('Attempting to vote for post:', id);
   
-    // First, check if the post exists
-    const { data: post, error: fetchError } = await supabase
-      .from('posts')
-      .select('*')
-      .eq('id', id)
-      .single();
-  
-    console.log('Fetch post result:', { post, fetchError });
-  
-    if (fetchError) {
-      console.error('Error fetching post:', fetchError);
-      throw fetchError;
-    }
-  
-    if (!post) {
-      console.error('Post not found:', id);
-      throw new Error(`Post with id ${id} not found`);
-    }
-  
-    // If the post exists, proceed with voting
     const { data, error } = await supabase
       .rpc('increment_votes', { input_post_id: id });
-  
-    console.log('RPC call result:', { data, error });
   
     if (error) {
       console.error('Error in vote method:', error);

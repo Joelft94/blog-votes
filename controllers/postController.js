@@ -185,21 +185,20 @@ export const votePost = async (req, res) => {
   try {
     const updatedPost = await Post.vote(req.params.id);
     console.log('Vote successful, returning updated post:', updatedPost);
-    
+
     // Check if it's an AJAX request
-    if (req.xhr || req.headers.accept.indexOf('json') > -1) {
+    if (req.xhr || req.headers['x-requested-with'] === 'XMLHttpRequest') {
       return res.json({ votes: updatedPost.votes });
     } else {
       // For non-AJAX requests, redirect
       return res.redirect(`/post/${updatedPost.id}`);
     }
-    
   } catch (error) {
     console.error('Error voting for post:', error);
     if (error.message.includes('not found')) {
       return res.status(404).json({ error: 'Post not found' });
     }
-    if (req.xhr || req.headers.accept.indexOf('json') > -1) {
+    if (req.xhr || req.headers['x-requested-with'] === 'XMLHttpRequest') {
       return res.status(500).json({ error: error.message || 'An error occurred while voting for the post' });
     } else {
       return res.status(500).render('error', { message: error.message || 'An error occurred while voting for the post' });

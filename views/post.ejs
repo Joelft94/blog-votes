@@ -3,9 +3,7 @@
   <p><%= post.content %></p>
   <p>Votes: <span id="voteCount"><%= post.votes %></span></p>
   <% if (locals.user) { %>
-    <form action="/post/<%= post.id %>/vote" method="POST">
-      <button type="submit" id="voteButton">Vote</button>
-    </form>
+    <button id="voteButton" data-post-id="<%= post.id %>">Vote</button>
     <% if (user.id === post.user_id) { %>
       <a href="/post/<%= post.id %>/update" class="btn">Edit</a>
       <form action="/post/<%= post.id %>/delete" method="POST" style="display: inline;">
@@ -18,17 +16,34 @@
 </article>
 
 <script>
-document.getElementById('voteButton')?.addEventListener('click', function(e) {
-  e.preventDefault();
-  fetch('/post/<%= post.id %>/vote', { method: 'POST' })
-    .then(response => response.json())
-    .then(data => {
-      if (data.error) {
-        console.error('Error:', data.error);
-      } else {
-        document.getElementById('voteCount').textContent = data.votes;
-      }
-    })
-    .catch(error => console.error('Error:', error));
+document.addEventListener('DOMContentLoaded', function() {
+  const voteButton = document.getElementById('voteButton');
+  const voteCount = document.getElementById('voteCount');
+
+  if (voteButton) {
+    voteButton.addEventListener('click', function() {
+      const postId = this.getAttribute('data-post-id');
+      
+      fetch(`/post/${postId}/vote`, { 
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Requested-With': 'XMLHttpRequest'
+        }
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.votes) {
+          voteCount.textContent = data.votes;
+        } else if (data.error) {
+          alert(data.error);
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred while voting');
+      });
+    });
+  }
 });
 </script>
