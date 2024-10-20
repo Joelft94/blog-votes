@@ -63,7 +63,7 @@ export const createPost = async (req, res) => {
   try {
     const { title, content } = req.body;
     const newPost = await Post.create(title, content, req.user.id);
-    console.log('Created post:', data);
+    console.log('Created post:', newPost);
     res.redirect(`/post/${newPost.id}`);
   } catch (error) {
     console.error('Error creating post:', error);
