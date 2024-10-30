@@ -2,7 +2,9 @@ import { supabase } from '../supabaseClient.js';
 import bcrypt from 'bcrypt';
 import crypto from 'crypto';
 
-const SALT_ROUNDS = 12;
+// const SALT_ROUNDS = 12;
+
+// const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
 
 // Store for failed attempts (in production, use Redis or a database)
 const loginAttempts = new Map();
