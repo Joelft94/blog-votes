@@ -13,6 +13,23 @@
       <a href="/">Home</a>
       <% if (locals.user) { %>
         <a href="/create">Create Post</a>
+        
+        <!-- Add admin navigation -->
+        <% if (locals.user.role === 'admin') { %>
+          <div class="admin-links" style="display: inline;">
+            <a href="/admin/dashboard" style="background: #dc3545; padding: 5px 10px; border-radius: 3px;">Admin Dashboard</a>
+            <a href="/admin/users" style="background: #dc3545; padding: 5px 10px; border-radius: 3px;">Manage Users</a>
+          </div>
+        <% } %>
+
+        <!-- Show user info -->
+        <span style="color: white; margin: 0 10px;">
+          <%= user.email %>
+          <% if (user.role === 'admin') { %>
+            <span style="background: #dc3545; padding: 2px 6px; border-radius: 3px; font-size: 0.8em;">ADMIN</span>
+          <% } %>
+        </span>
+        
         <a href="/logout">Logout</a>
       <% } else { %>
         <a href="/login">Login</a>

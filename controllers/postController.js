@@ -1,4 +1,6 @@
 import Post from '../models/Post.js';
+import { sanitizeInput } from '../middleware/security.js';
+
 
 export const getAllPosts = async (req, res) => {
   try {
@@ -9,7 +11,7 @@ export const getAllPosts = async (req, res) => {
       layout: './layouts/layout'
     });
 
-    console.log('Fetched posts:', posts);
+    // console.log('Fetched posts:', posts);
 
   } catch (error) {
     console.error('Error fetching posts:', error);
@@ -61,9 +63,12 @@ export const createPost = async (req, res) => {
     return res.status(401).redirect('/login');
   }
   try {
-    const { title, content } = req.body;
+
+    const title = sanitizeInput(req.body.title);
+    const content = sanitizeInput(req.body.content);
+
     const newPost = await Post.create(title, content, req.user.id);
-    console.log('Created post:', newPost);
+    // console.log('Created post:', newPost);
     res.redirect(`/post/${newPost.id}`);
   } catch (error) {
     console.error('Error creating post:', error);
@@ -178,7 +183,7 @@ export const deletePost = async (req, res) => {
 };
 
 export const votePost = async (req, res) => {
-  console.log('User attempting to vote:', req.user);
+  // console.log('User attempting to vote:', req.user);
   if (!req.user) {
     return res.status(401).json({ error: 'You must be logged in to vote' });
   }

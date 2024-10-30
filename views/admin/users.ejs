@@ -1,0 +1,95 @@
+<div class="admin-users">
+    <h2>User Management</h2>
+    
+    <% if (locals.error) { %>
+      <div class="error-message" style="color: red;">
+        <%= error %>
+      </div>
+    <% } %>
+    
+    <% if (locals.success) { %>
+      <div class="success-message" style="color: green;">
+        <%= success %>
+      </div>
+    <% } %>
+  
+    <table>
+      <thead>
+        <tr>
+          <th>Email</th>
+          <th>Role</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% users.forEach(user => { %>
+          <tr>
+            <td><%= user.email %></td>
+            <td><%= user.user_roles?.role || 'user' %></td>
+            <td>
+              <form action="/admin/users/<%= user.id %>/role" method="POST" style="display: inline;">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                <select name="newRole">
+                  <option value="user" <%= user.user_roles?.role === 'user' ? 'selected' : '' %>>User</option>
+                  <option value="admin" <%= user.user_roles?.role === 'admin' ? 'selected' : '' %>>Admin</option>
+                </select>
+                <button type="submit" class="btn btn-primary">Update Role</button>
+              </form>
+              
+              <form action="/admin/users/<%= user.id %>/delete" method="POST" style="display: inline;">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this user?');">
+                  Delete
+                </button>
+              </form>
+            </td>
+          </tr>
+        <% }); %>
+      </tbody>
+    </table>
+  </div>
+  
+  <style>
+  .admin-users {
+    padding: 20px;
+  }
+  
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+  }
+  
+  th, td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  th {
+    background-color: #f5f5f5;
+  }
+  
+  .btn {
+    padding: 5px 10px;
+    margin: 0 5px;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+  }
+  
+  .btn-primary {
+    background-color: #007bff;
+    color: white;
+  }
+  
+  .btn-danger {
+    background-color: #dc3545;
+    color: white;
+  }
+  
+  select {
+    padding: 5px;
+    margin-right: 5px;
+  }
+  </style>
